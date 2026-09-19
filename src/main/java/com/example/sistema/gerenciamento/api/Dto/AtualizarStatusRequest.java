@@ -6,4 +6,4 @@ import jakarta.validation.constraints.NotNull;
 public record AtualizarStatusRequest(
         @NotNull StatusAtividade status,
         String observacao) {
-}
+} 

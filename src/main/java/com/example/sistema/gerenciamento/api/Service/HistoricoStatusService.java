@@ -13,6 +13,6 @@ public class HistoricoStatusService {
     public HistoricoStatusService(HistoricoStatusRepository repository) { this.repository = repository; }
 
     public List<HistoricoStatus> listarPorParticipacao(Long participacaoId) {
-        return repository.findByParticipacaoIdOrderByAlteradoEmDesc(participacaoId);
+        return repository.findByParticipacaoIdOrderByDataAlteracaoDesc(participacaoId);
     }
 }

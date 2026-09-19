@@ -56,6 +56,6 @@ public class ParticipacaoService {
     public void excluir(Long id) { repository.delete(buscar(id)); }
 
     private void registrarHistorico(Participacao participacao, StatusAtividade status, String observacao) {
-        historicoRepository.save(new HistoricoStatus(null, LocalDateTime.now(), status, observacao, participacao));
+        historicoRepository.save(new HistoricoStatus(null, LocalDateTime.now(), status, observacao, participacao, null));
     }
 }
