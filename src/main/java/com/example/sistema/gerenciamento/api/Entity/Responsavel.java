@@ -11,6 +11,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/** Gestor responsavel por um ou mais servicos. */
+// @Entity define o mapeamento persistente do gestor.
 @Entity
 @Getter
 @Setter
@@ -18,16 +20,20 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Responsavel {
 
+	/** Identificador gerado pelo banco. */
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	/** Nome obrigatorio do responsavel. */
 	@NotBlank
 	private String nome;
 
+	/** Email obrigatorio com formato validado. */
 	@Email
 	@NotBlank
 	private String email;
 
+	/** Telefone opcional para contato. */
 	private String telefone;
 }
