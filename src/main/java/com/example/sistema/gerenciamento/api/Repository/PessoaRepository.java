@@ -6,25 +6,24 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-/** Consultas de persistencia e filtros para pessoas atendidas pelo sistema. */
 @Repository
 public interface PessoaRepository extends JpaRepository<Pessoa, Long> {
 
-    /** Busca uma pessoa pelo CPF exato. */
+    // [ GET ] - BUSCA UMA PESSOA PELO CPF EXATO
     Optional<Pessoa> findByCpf(String cpf);
 
-    /** Verifica se ja existe pessoa cadastrada com o CPF informado. */
+    // [ GET ] - VERIFICA SE JÁ EXISTE PESSOA CADASTRADA COM O CPF INFORMADO
     boolean existsByCpf(String cpf);
 
-    /** Verifica se ja existe pessoa cadastrada com o e-mail informado. */
+    // [ GET ] - VERIFICA SE JÁ EXISTE PESSOA CADASTRADA COM O E-MAIL INFORMADO
     boolean existsByEmail(String email);
 
-    /** Busca uma pessoa pela matricula exata. */
+    // [ GET ] - BUSCA UMA PESSOA PELA MATRÍCULA EXATA
     Optional<Pessoa> findByMatricula(String matricula);
 
-    /** Verifica se ja existe pessoa cadastrada com a matricula informada. */
+    // [ GET ] - VERIFICA SE JÁ EXISTE PESSOA CADASTRADA COM A MATRÍCULA INFORMADA
     boolean existsByMatricula(String matricula);
 
-    /** Pesquisa por parte do nome ou do CPF, sem diferenciar maiusculas. */
+    // [ GET ] - PESQUISA POR PARTE DO NOME OU DO CPF IGNORANDO MAIÚSCULAS E MINÚSCULAS
     List<Pessoa> findByNomeContainingIgnoreCaseOrCpfContaining(String nome, String cpf);
 }
