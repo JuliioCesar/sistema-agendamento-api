@@ -17,18 +17,11 @@ import lombok.Setter;
 @Builder
 public class Endereco {
 
-	/** Rua ou avenida do endereco. */
-	private String logradouro;
-	/** Numero do imovel. */
-	private String numero;
-	/** Complemento opcional. */
-	private String complemento;
-	/** Bairro do endereco. */
-	private String bairro;
-	/** Cidade do endereco. */
-	private String cidade;
-	/** Unidade federativa. */
-	private String estado;
-	/** Codigo postal. */
 	private String cep;
+	private String logradouro;
+	private String bairro;
+	private String cidade;
+	private String estado;
+	private String numero;
+	private String complemento;
 }

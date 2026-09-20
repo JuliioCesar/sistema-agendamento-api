@@ -1,16 +1,8 @@
 package com.example.sistema.gerenciamento.api.Entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,8 +10,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/** Pessoa atendida pelo sistema de gerenciamento social. */
-// @Entity marca a classe como uma entidade persistente do JPA.
 @Entity
 @Getter
 @Setter
@@ -28,50 +18,48 @@ import lombok.Setter;
 @Builder
 public class Pessoa {
 
-	/** Identificador tecnico gerado pelo banco. */
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	/** Nome obrigatorio da pessoa. */
-	@NotBlank
-	private String nome;
+    @Column(nullable = false, length = 150)
+    private String nome;
 
-	/** Matricula unica usada para localizar rapidamente o cadastro. */
-	@Column(nullable = false, unique = true, length = 50)
-	@NotBlank
-	private String matricula;
+    @Column(nullable = false, unique = true, length = 50)
+    private String matricula;
 
-	/** Email de contato validado pelo Bean Validation. */
-	@Email
-	@NotBlank
-	private String email;
+    @Column(nullable = false, unique = true, length = 100)
+    private String email;
 
-	/** CPF usado para identificar a pessoa e impedir cadastros duplicados. */
-	@Column(unique = true, length = 14)
-	private String cpf;
+    @Column(nullable = false, unique = true, length = 11)
+    private String cpf;
 
-	/** Telefone opcional de contato. */
-	private String telefone;
+    @Column(nullable = false, length = 20)
+    private String telefone;
 
-	/** Data usada pelo metodo de calculo de maioridade. */
-	private LocalDate dataNascimento;
+    @Column(name = "data_nascimento")
+    private LocalDate dataNascimento;
 
-	// @Embedded grava os campos de Endereco na mesma tabela de Pessoa.
-	@Embedded
-	/** Endereco opcional composto por varios campos simples. */
-	private Endereco endereco;
+    @Column(name = "data_cadastro", nullable = false, updatable = false)
+    private LocalDateTime dataCadastro;
 
-	// @OneToOne representa no maximo um responsavel para cada pessoa.
-	@OneToOne
-	// A ausencia de nullable=false permite cadastrar pessoa sem responsavel.
-	@JoinColumn(name = "responsavel_id")
-	/** Responsavel legal opcional da pessoa. */
-	private Responsavel responsavel;
+    @Embedded
+    private Endereco endereco;
 
-	/** Indica se a pessoa tinha menos de 18 anos na data atual. */
-	public boolean isMenorDeIdade() {
-		return dataNascimento != null
-				&& Period.between(dataNascimento, LocalDate.now()).getYears() < 18;
-	}
+    @OneToOne
+    @JoinColumn(name = "responsavel_id")
+    private Responsavel responsavel;
+
+    @PrePersist
+    public void prePersist() {
+        if (this.dataCadastro == null) {
+            this.dataCadastro = LocalDateTime.now();
+        }
+    }
+
+    /** Indica se a pessoa tinha menos de 18 anos na data atual. */
+    public boolean isMenorDeIdade() {
+        return dataNascimento != null
+                && Period.between(dataNascimento, LocalDate.now()).getYears() < 18;
+    }
 }
