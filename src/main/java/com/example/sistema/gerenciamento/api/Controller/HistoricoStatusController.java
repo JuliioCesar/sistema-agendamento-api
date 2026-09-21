@@ -1,23 +1,43 @@
 package com.example.sistema.gerenciamento.api.Controller;
 
-import com.example.sistema.gerenciamento.api.Entity.HistoricoStatus;
+import com.example.sistema.gerenciamento.api.Dto.HistoricoStatusRequest;
+import com.example.sistema.gerenciamento.api.Dto.HistoricoStatusResponse;
 import com.example.sistema.gerenciamento.api.Service.HistoricoStatusService;
+import jakarta.validation.Valid;
 import java.util.List;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/participacoes/{participacaoId}/historico")
+@RequestMapping("/historicos-status")
+@RequiredArgsConstructor
 public class HistoricoStatusController {
-    
-	private final HistoricoStatusService service;
 
-	public HistoricoStatusController(HistoricoStatusService service) { this.service = service; }
+    private final HistoricoStatusService historicoStatusService;
 
-	@GetMapping
-	public List<HistoricoStatus> listar(@PathVariable Long participacaoId) {
-		return service.listarPorParticipacao(participacaoId);
-	}
+    // [ GET ] - RETORNA TODOS OS REGISTROS DE HISTÓRICO
+    @GetMapping
+    public ResponseEntity<List<HistoricoStatusResponse>> listarTodos() {
+        return ResponseEntity.ok(historicoStatusService.listarTodos());
+    }
+
+    // [ GET ] - BUSCA UM REGISTRO DE HISTÓRICO ESPECÍFICO PELO ID
+    @GetMapping("/{id}")
+    public ResponseEntity<HistoricoStatusResponse> buscarPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(historicoStatusService.buscarPorId(id));
+    }
+
+    // [ GET ] - RETORNA O HISTÓRICO DE UMA PARTICIPAÇÃO ESPECÍFICA
+    @GetMapping("/participacao/{participacaoId}")
+    public ResponseEntity<List<HistoricoStatusResponse>> listarPorParticipacao(@PathVariable Long participacaoId) {
+        return ResponseEntity.ok(historicoStatusService.listarPorParticipacao(participacaoId));
+    }
+
+    // [ POST ] - REGISTRA UMA NOVA ALTERAÇÃO DE STATUS NO HISTÓRICO
+    @PostMapping
+    public ResponseEntity<HistoricoStatusResponse> salvar(@Valid @RequestBody HistoricoStatusRequest dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(historicoStatusService.salvar(dto));
+    }
 }

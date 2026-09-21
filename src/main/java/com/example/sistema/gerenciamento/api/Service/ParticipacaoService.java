@@ -9,11 +9,12 @@ import com.example.sistema.gerenciamento.api.Repository.HistoricoStatusRepositor
 import com.example.sistema.gerenciamento.api.Repository.ParticipacaoRepository;
 import com.example.sistema.gerenciamento.api.Repository.PessoaRepository;
 import com.example.sistema.gerenciamento.api.Repository.ServicoRepository;
-import java.time.LocalDateTime;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class ParticipacaoService {
 
     private final ParticipacaoRepository repository;
@@ -21,20 +22,18 @@ public class ParticipacaoService {
     private final ServicoRepository servicoRepository;
     private final HistoricoStatusRepository historicoRepository;
 
-    public ParticipacaoService(ParticipacaoRepository repository, PessoaRepository pessoaRepository,
-            ServicoRepository servicoRepository, HistoricoStatusRepository historicoRepository) {
-        this.repository = repository;
-        this.pessoaRepository = pessoaRepository;
-        this.servicoRepository = servicoRepository;
-        this.historicoRepository = historicoRepository;
+    // [ GET ] - LISTA TODAS AS PARTICIPAÇÕES
+    public List<Participacao> listar() { 
+        return repository.findAll(); 
     }
 
-    public List<Participacao> listar() { return repository.findAll(); }
-
+    // [ GET ] - BUSCA PARTICIPAÇÃO POR ID
     public Participacao buscar(Long id) {
-        return repository.findById(id).orElseThrow(() -> new RecursoNaoEncontradoException("Participação", id));
+        return repository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Participação", id));
     }
 
+    // [ POST ] - CADASTRA UMA NOVA PARTICIPAÇÃO
     public Participacao salvar(Participacao participacao) {
         participacao.setPessoa(pessoaRepository.findById(participacao.getPessoa().getId())
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Pessoa", participacao.getPessoa().getId())));
@@ -45,6 +44,7 @@ public class ParticipacaoService {
         return salva;
     }
 
+    // [ PUT ] - ATUALIZA O STATUS DA PARTICIPAÇÃO
     public Participacao atualizarStatus(Long id, AtualizarStatusRequest request) {
         Participacao participacao = buscar(id);
         participacao.setStatus(request.status());
@@ -53,9 +53,19 @@ public class ParticipacaoService {
         return atualizada;
     }
 
-    public void excluir(Long id) { repository.delete(buscar(id)); }
+    // [ DELETE ] - EXCLUI A PARTICIPAÇÃO POR ID
+    public void excluir(Long id) { 
+        repository.delete(buscar(id)); 
+    }
 
+    // REGISTRA AUTOMATICAMENTE O HISTÓRICO DE STATUS
     private void registrarHistorico(Participacao participacao, StatusAtividade status, String observacao) {
-        historicoRepository.save(new HistoricoStatus(null, LocalDateTime.now(), status, observacao, participacao, null));
+        HistoricoStatus historico = HistoricoStatus.builder()
+                .status(status)
+                .observacao(observacao)
+                .participacao(participacao)
+                .build();
+
+        historicoRepository.save(historico);
     }
 }
