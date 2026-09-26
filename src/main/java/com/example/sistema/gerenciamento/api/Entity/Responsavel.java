@@ -1,39 +1,36 @@
 package com.example.sistema.gerenciamento.api.Entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/** Gestor responsavel por um ou mais servicos. */
-// @Entity define o mapeamento persistente do gestor.
 @Entity
+@Table(name = "responsaveis")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Responsavel {
 
-	/** Identificador gerado pelo banco. */
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	/** Nome obrigatorio do responsavel. */
-	@NotBlank
-	private String nome;
+    @Column(nullable = false, length = 150)
+    private String nome;
 
-	/** Email obrigatorio com formato validado. */
-	@Email
-	@NotBlank
-	private String email;
+    @Column(nullable = false, unique = true, length = 100)
+    private String email;
 
-	/** Telefone opcional para contato. */
-	private String telefone;
+    @Column(length = 20)
+    private String telefone;
 }
